@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://bvhvp5xhdaq1j"]
+
+[ext_resource type="Script" uid="uid://boi0sdch611ej" path="res://scenes/road.gd" id="1_fy6l0"]
+[ext_resource type="Script" uid="uid://dwgd7fhc366sl" path="res://sprite_stack.gd" id="1_my2y2"]
+[ext_resource type="Texture2D" uid="uid://bql28t6s3c03g" path="res://assets/road.png" id="2_fy6l0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ekj83"]
+size = Vector2(15, 9)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_my2y2"]
+size = Vector2(24, 11)
+
+[node name="Road" type="Node2D"]
+script = ExtResource("1_fy6l0")
+
+[node name="Road" type="CanvasGroup" parent="."]
+script = ExtResource("1_my2y2")
+texture = ExtResource("2_fy6l0")
+hframes = 11
+spacting = 0.9
+stack_rotation = 90.0
+metadata/_custom_type_script = "uid://dwgd7fhc366sl"
+
+[node name="Coliders" type="Node2D" parent="."]
+rotation = -1.5708
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Coliders"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Coliders/StaticBody2D"]
+position = Vector2(-19, 24)
+shape = SubResource("RectangleShape2D_ekj83")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="Coliders"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Coliders/StaticBody2D3"]
+position = Vector2(7, 24)
+shape = SubResource("RectangleShape2D_my2y2")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Coliders"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Coliders/StaticBody2D2"]
+position = Vector2(30, 24)
+shape = SubResource("RectangleShape2D_ekj83")

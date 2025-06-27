@@ -1,0 +1,155 @@
+[gd_scene load_steps=15 format=3 uid="uid://dw446kblm4gtv"]
+
+[ext_resource type="Script" uid="uid://cygtudt1tch7r" path="res://scenes/render.gd" id="1_pqwm0"]
+[ext_resource type="Script" uid="uid://dwgd7fhc366sl" path="res://sprite_stack.gd" id="2_qul4c"]
+[ext_resource type="Texture2D" uid="uid://d00v4kgcjdec7" path="res://assets/sprite_stack_test.png" id="3_1w2bp"]
+[ext_resource type="Texture2D" uid="uid://djnyuytwm35ef" path="res://assets/icons/sprite_stack_icons.png" id="4_1w2bp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a8613"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(352, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jnmdv"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(32, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1w2bp"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(384, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_exhxs"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(64, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g7xpd"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(416, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e8y83"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(96, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xkgr7"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(448, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fsl7o"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(128, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5bj3c"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(480, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8aobt"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(160, 288, 32, 32)
+
+[node name="Render" type="Node"]
+script = ExtResource("1_pqwm0")
+rotation_speed = 15.0
+sprite_stack_rotation = 15.0
+save_incremental = true
+clear_output = true
+save_path = "res://exports/"
+file_name = "test_export"
+sprite_sheet_save_path = "res://exports/packed/"
+sprite_sheet_file_name = "desk_15_degree"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RenderingContainer" type="SubViewportContainer" parent="CanvasLayer/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 4
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/RenderingContainer"]
+unique_name_in_owner = true
+transparent_bg = true
+handle_input_locally = false
+mesh_lod_threshold = 1024.0
+canvas_item_default_texture_filter = 0
+size = Vector2i(160, 160)
+render_target_update_mode = 4
+
+[node name="SpriteStack" type="CanvasGroup" parent="CanvasLayer/Control/RenderingContainer/SubViewport"]
+unique_name_in_owner = true
+script = ExtResource("2_qul4c")
+texture = ExtResource("3_1w2bp")
+hframes = 14
+spacting = 1.0
+metadata/_custom_type_script = "uid://dwgd7fhc366sl"
+
+[node name="MainCamera" type="Camera2D" parent="CanvasLayer/Control/RenderingContainer/SubViewport"]
+unique_name_in_owner = true
+position = Vector2(50, 50)
+
+[node name="VFlowContainer" type="VFlowContainer" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ZoomInButton" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+tooltip_text = "Zoom In"
+texture_normal = SubResource("AtlasTexture_a8613")
+texture_pressed = SubResource("AtlasTexture_jnmdv")
+stretch_mode = 4
+
+[node name="ZoomOutButton" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+tooltip_text = "Zoom Out"
+texture_normal = SubResource("AtlasTexture_1w2bp")
+texture_pressed = SubResource("AtlasTexture_exhxs")
+stretch_mode = 4
+
+[node name="Left" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+tooltip_text = "Zoom In"
+texture_normal = SubResource("AtlasTexture_g7xpd")
+texture_pressed = SubResource("AtlasTexture_e8y83")
+stretch_mode = 4
+
+[node name="Pause" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+tooltip_text = "Zoom Out"
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_xkgr7")
+texture_pressed = SubResource("AtlasTexture_fsl7o")
+stretch_mode = 4
+
+[node name="Right" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+tooltip_text = "Zoom In"
+texture_normal = SubResource("AtlasTexture_5bj3c")
+texture_pressed = SubResource("AtlasTexture_8aobt")
+stretch_mode = 4

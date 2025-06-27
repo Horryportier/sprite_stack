@@ -1,0 +1,64 @@
+[gd_scene load_steps=6 format=3 uid="uid://5u8mwg7cwdbh"]
+
+[ext_resource type="Script" uid="uid://ctxa0817b0i7g" path="res://scenes/main.gd" id="1_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://dbgq1iripcey5" path="res://scenes/car.tscn" id="4_tbgi4"]
+[ext_resource type="FontFile" uid="uid://xt8p3wqcjgdy" path="res://assets/monogram.ttf" id="5_tbgi4"]
+[ext_resource type="Script" uid="uid://b3ll3kfgwkeou" path="res://fps_label.gd" id="5_tefeu"]
+
+[sub_resource type="Gradient" id="Gradient_tbgi4"]
+offsets = PackedFloat32Array(0, 0.493151, 1)
+colors = PackedColorArray(0.536337, 0.0881544, 0.288296, 1, 0.779897, 0.58199, 0.173899, 1, 0, 0.595604, 0.300265, 1)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_0wfyh")
+
+[node name="Car" parent="." instance=ExtResource("4_tbgi4")]
+
+[node name="Camera2D" type="Camera2D" parent="Car"]
+position = Vector2(0, -8)
+zoom = Vector2(2.5, 2.5)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="RichTextLabel" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 160.0
+offset_top = -28.0
+offset_right = 238.0
+offset_bottom = -15.0
+grow_vertical = 0
+scale = Vector2(2, 2)
+theme_override_colors/default_color = Color(0.168627, 0.168627, 0.270588, 1)
+theme_override_fonts/normal_font = ExtResource("5_tbgi4")
+theme_override_fonts/bold_font = ExtResource("5_tbgi4")
+bbcode_enabled = true
+text = "[b]@horryportier[/b]"
+fit_content = true
+autowrap_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="FpsLabel" type="RichTextLabel" parent="CanvasLayer/Control"]
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 40.0
+bbcode_enabled = true
+fit_content = true
+autowrap_mode = 0
+script = ExtResource("5_tefeu")
+format = "fps: [color=%s]%s[/color]"
+use_color = true
+gradient = SubResource("Gradient_tbgi4")
+metadata/_custom_type_script = "uid://b3ll3kfgwkeou"
+metadata/_edit_use_anchors_ = true

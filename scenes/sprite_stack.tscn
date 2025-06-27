@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://csf10by0vj5u3"]
+
+[ext_resource type="Script" uid="uid://dwgd7fhc366sl" path="res://sprite_stack.gd" id="1_nbbnv"]
+[ext_resource type="Texture2D" uid="uid://d00v4kgcjdec7" path="res://assets/sprite_stack_test.png" id="2_5tdvd"]
+
+[node name="SpriteStack" type="CanvasGroup"]
+script = ExtResource("1_nbbnv")
+texture = ExtResource("2_5tdvd")
+hframes = 14
+spacting = 1.0

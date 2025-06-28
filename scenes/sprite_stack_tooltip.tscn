@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://bm0g2pd3pgg35"]
+
+[ext_resource type="Script" uid="uid://b8go8l7qd1bl2" path="res://scenes/sprite_stack_tooltip.gd" id="1_b5ola"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_b5ola")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+bbcode_enabled = true
+fit_content = true
+autowrap_mode = 0

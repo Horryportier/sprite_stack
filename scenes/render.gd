@@ -26,8 +26,8 @@ extends Node
 @onready var save_incremental_button: CheckButton = %SaveIncremental
 @onready var custom_rotation: LineEdit = %Rotation
 @onready var increments: LineEdit = %Increments
+@onready var save_path_indicator: RichTextLabel = %SavePathIndicator
 
-@onready var asepriet_path_line_edit: LineEdit = %AsepritePath
 @onready var background_color_button: ColorPickerButton = %BackgroundColorButton
 
 @export_group("ui")
@@ -37,16 +37,12 @@ extends Node
 @export var sprite_stack_rotation: float = 0 
 @export var sprite_stack_rotation_increments: float = 15
 @export var save_incremental: bool = false
-@export var clear_output: bool
-
-
-const DEFAULT_ASEPRITE_PATH: String = "aseprite"
-
-@export var aseprite_path: String = DEFAULT_ASEPRITE_PATH
 
 
 const CENTER_POSITION: Vector2 = Vector2(0.5, 0.5)
 const DEFAULT_ZOOM: float  = -0.145
+
+const SAFE_PATH_INDICAITOR_FORMAT: String = "Saving at: [color=green]%s[/color]"
 
 @export_group("export")
 @export var output_path: String
@@ -59,8 +55,6 @@ var is_spining_on: bool = false
 
 func _ready() -> void:
 	align()
-	asepriet_path_line_edit.text = DEFAULT_ASEPRITE_PATH
-	asepriet_path_line_edit.text_changed.connect(_on_custom_aseprite_text_chnaged)
 	pause.toggled.connect(func (toggled: bool) -> void: is_spining_on = toggled)
 	left.pressed.connect(func () -> void: sprite_stack.stack_rotation += rotation_speed)
 	right.pressed.connect(func () -> void: sprite_stack.stack_rotation -= rotation_speed)
@@ -75,29 +69,30 @@ func _ready() -> void:
 	increments.text_changed.connect(_on_increments_text_changed)
 	background_color_button.color_changed.connect(_on_background_color_changed)
 	reset_transform_button.pressed.connect(_on_reset_transform_pressed)
+	_on_background_color_changed(background_color_button.color)
 
 func save_by_angle(path: String) -> void:
 	align()
-	print(save_incremental)
 	sprite_stack.stack_rotation = 0
+	var frames: Array[Image]
 	if save_incremental:
 		for i: int in 360 / sprite_stack_rotation_increments:
 			var frame_path = "%sframe_%s.png" % [output_path, i]
-			await save(frame_path)
+			frames.append(await save(frame_path))
 			current_angle += sprite_stack_rotation_increments
 			sprite_stack.stack_rotation = current_angle
 			await get_tree().create_timer(0.2).timeout
 		current_angle = 0
 		await get_tree().create_timer(1).timeout
-		sprite_sheet(path)
+		var sheet: = sprite_sheet(frames)
+		sheet.save_png(path)
 		await get_tree().create_timer(2).timeout
-		if clear_output:
-			_clean_output()
-
-
 	else:
 		sprite_stack.stack_rotation = sprite_stack_rotation
 		save(path)
+	save_path_indicator.text = "Saved"
+	get_tree().create_timer(3).timeout.connect(func () -> void: save_path_indicator.text = "")
+	
 
 func _physics_process(delta: float) -> void:
 	if is_spining_on:
@@ -117,35 +112,38 @@ func align() -> void:
 	sprite_stack.global_position = subviewport.size * 0.5 + Vector2(0, sprite_stack.hframes / 2)
 	camera.global_position = subviewport.size * 0.5
 
-func save(path: String) -> void:
+func save(path: String) -> Image:
 	await  RenderingServer.frame_post_draw
 	var texture: = subviewport.get_texture()
 	var image: = texture.get_image()
 	image.convert(Image.FORMAT_RGBA8)
 	image.save_png(path)
+	return image
 
-
-func _clean_output() -> void:
-	var paths: = DirAccess.get_files_at(output_path)
-	var dir: = DirAccess.open(output_path)
-	for path in paths:
-		if path.ends_with(".png"):
-			dir.remove(path)
-
-func sprite_sheet(sprite_sheet_save_path: String) -> void:
-	var paths: = DirAccess.get_files_at(output_path)
-	var args: PackedStringArray 
-	var save_path_trimed: = output_path.trim_prefix("res://")
-	for path in paths:
-		if path.ends_with(".png"):
-			args.append(save_path_trimed + path)
-	args.append("--sheet=%s" % [sprite_sheet_save_path])
-	#print_rich("[color=red]%s" %[args] )
-	var dir: Dictionary = OS.execute_with_pipe(aseprite_path if aseprite_path != "" else DEFAULT_ASEPRITE_PATH, args)
-	await get_tree().create_timer(2).timeout
-	if dir.has("pid"):
-		OS.kill(dir["pid"])
+func sprite_sheet(frames: Array[Image]) -> Image:
+	if frames.is_empty():
+		return Image.new()
+	var full_size: = frames[0].get_size() * Vector2i(frames.size(), 1)
+	var frame_width: = frames[0].get_size().x 
+	var img: = Image.new()
+	img.set_data(1, 1, false, Image.FORMAT_RGBA8, [0, 0, 0, 0])
+	img.resize(full_size.x, full_size.y)
+	for idx in frames.size():
+		img.blit_rect(frames[idx], Rect2i(Vector2.ZERO, frames[idx].get_size()), Vector2i(frame_width * idx, 0))
+	return img
 	
+#func sprite_sheet(sprite_sheet_save_path: String) -> void:
+#	var paths: = DirAccess.get_files_at(output_path)
+#	var args: PackedStringArray 
+#	var save_path_trimed: = output_path.trim_prefix("res://")
+#	for path in paths:
+#		if path.ends_with(".png"):
+#		args.append(save_path_trimed + path)
+#	args.append("--sheet=%s" % [sprite_sheet_save_path])
+#	var dir: Dictionary = OS.execute_with_pipe(aseprite_path if aseprite_path != "" else DEFAULT_ASEPRITE_PATH, args)
+#	await get_tree().create_timer(2).timeout
+#	if dir.has("pid"):
+#		OS.kill(dir["pid"])
 
 func _on_file_selected(path: String) -> void:
 	match file_dialog.file_mode:
@@ -170,6 +168,7 @@ func _save_file(path: String) -> void:
 		return
 	is_spining_on = false
 	pause.button_pressed = false
+	save_path_indicator.text = SAFE_PATH_INDICAITOR_FORMAT % [path]
 	save_by_angle(path)
 
 func _on_h_frames_text_changed(new_text: String) -> void:
@@ -198,14 +197,6 @@ func _on_custom_rotation_text_changed(new_text: String) -> void:
 		custom_rotation.text = str(sprite_stack_rotation)
 		return
 	sprite_stack_rotation = float(new_text)
-
-func _on_custom_aseprite_text_chnaged(new_text: String) -> void:
-	if new_text == "":
-		return
-	if !new_text.is_valid_filename():
-		asepriet_path_line_edit.text = DEFAULT_ASEPRITE_PATH
-		return
-	aseprite_path = new_text
 
 func _on_increments_text_changed(new_text: String) -> void:
 	if new_text == "":

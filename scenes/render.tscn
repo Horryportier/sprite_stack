@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dw446kblm4gtv"]
+[gd_scene load_steps=25 format=3 uid="uid://dw446kblm4gtv"]
 
 [ext_resource type="Script" uid="uid://cygtudt1tch7r" path="res://scenes/render.gd" id="1_pqwm0"]
 [ext_resource type="Shader" uid="uid://cq2fje8juolwx" path="res://resources/zoom.gdshader" id="2_jnmdv"]
@@ -10,7 +10,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_exhxs"]
 shader = ExtResource("2_jnmdv")
 shader_parameter/zoom_center = Vector2(0.5, 0.5)
-shader_parameter/zoom_amount = -0.05
+shader_parameter/zoom_amount = -0.145
 shader_parameter/keep_within_bounds = false
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_a4580"]
@@ -20,6 +20,10 @@ region = Rect2(320, 0, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_ssogu"]
 atlas = ExtResource("4_1w2bp")
 region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_amfmh"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(512, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7n5nb"]
 atlas = ExtResource("4_1w2bp")
@@ -81,7 +85,6 @@ region = Rect2(160, 288, 32, 32)
 script = ExtResource("1_pqwm0")
 rotation_speed = 15.0
 save_incremental = true
-clear_output = true
 output_path = "res://exports/output/"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -158,11 +161,19 @@ offset_bottom = 74.0
 grow_horizontal = 2
 theme_override_constants/margin_top = 10
 
-[node name="LoadButtons" type="VFlowContainer" parent="CanvasLayer/Control/TopButtons"]
+[node name="VSplitContainer" type="VSplitContainer" parent="CanvasLayer/Control/TopButtons"]
+layout_mode = 2
+dragger_visibility = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/TopButtons/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LoadButtons" type="VFlowContainer" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="FileSelect" type="TextureButton" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+[node name="FileSelect" type="TextureButton" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -170,14 +181,14 @@ texture_normal = SubResource("AtlasTexture_a4580")
 texture_pressed = SubResource("AtlasTexture_ssogu")
 stretch_mode = 4
 
-[node name="HframesText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+[node name="HframesText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=49c2f2]H frames[/color]"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Hframes" type="LineEdit" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+[node name="Hframes" type="LineEdit" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
@@ -185,14 +196,14 @@ theme = ExtResource("5_a8613")
 text = "14"
 virtual_keyboard_type = 2
 
-[node name="SpacingText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+[node name="SpacingText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=49c2f2]Spacing[/color]"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Spacing" type="LineEdit" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+[node name="Spacing" type="LineEdit" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
@@ -200,29 +211,24 @@ theme = ExtResource("5_a8613")
 text = "1"
 virtual_keyboard_type = 2
 
-[node name="SaveButtons" type="VFlowContainer" parent="CanvasLayer/Control/TopButtons"]
+[node name="SaveButtons" type="VFlowContainer" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 
-[node name="VSplitContainer" type="VSplitContainer" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+[node name="VSplitContainer" type="VSplitContainer" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/SaveButtons"]
 layout_mode = 2
 size_flags_vertical = 0
 dragger_visibility = 2
 
-[node name="SaveIncremental" type="CheckButton" parent="CanvasLayer/Control/TopButtons/SaveButtons/VSplitContainer"]
+[node name="SaveIncremental" type="CheckButton" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/SaveButtons/VSplitContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "When ON will save spritesheet with sprite stack rotated by number specified in Increments field"
 button_pressed = true
-text = "save incremental"
+icon = SubResource("AtlasTexture_amfmh")
 
-[node name="AsepritePath" type="LineEdit" parent="CanvasLayer/Control/TopButtons/SaveButtons/VSplitContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "aseprite"
-placeholder_text = "Aseprite Path"
-
-[node name="SaveButton" type="TextureButton" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+[node name="SaveButton" type="TextureButton" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/SaveButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -231,7 +237,7 @@ texture_normal = SubResource("AtlasTexture_7n5nb")
 texture_pressed = SubResource("AtlasTexture_vc1to")
 stretch_mode = 4
 
-[node name="HframesText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+[node name="HframesText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/SaveButtons"]
 layout_mode = 2
 tooltip_text = "How many degress bettwen each rotation "
 bbcode_enabled = true
@@ -239,7 +245,7 @@ text = "[color=49c2f2]Increments[/color]"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Increments" type="LineEdit" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+[node name="Increments" type="LineEdit" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/SaveButtons"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
@@ -247,14 +253,14 @@ theme = ExtResource("5_a8613")
 text = "15"
 virtual_keyboard_type = 2
 
-[node name="SpacingText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+[node name="SpacingText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/SaveButtons"]
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=49c2f2]Rotation[/color]"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Rotation" type="LineEdit" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+[node name="Rotation" type="LineEdit" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/SaveButtons"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
@@ -262,6 +268,13 @@ tooltip_text = "when save incremental is off it will use this as custom rotation
 theme = ExtResource("5_a8613")
 text = "0"
 virtual_keyboard_type = 2
+
+[node name="SavePathIndicator" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/VSplitContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+bbcode_enabled = true
+autowrap_mode = 1
 
 [node name="BottomButtons" type="MarginContainer" parent="CanvasLayer/Control"]
 layout_mode = 1
@@ -348,7 +361,7 @@ autowrap_mode = 0
 unique_name_in_owner = true
 layout_mode = 2
 text = "Background"
-color = Color(0.298039, 0.298039, 0.298039, 1)
+color = Color(0.286275, 0.760784, 0.94902, 1)
 
 [node name="FileDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true

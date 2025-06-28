@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="Swatches" load_steps=2 format=3 uid="uid://dit7n741uc3cj"]
+
+[ext_resource type="Script" uid="uid://byib4gjsgbvli" path="res://scenes/swatches.gd" id="1_hywoe"]
+
+[resource]
+script = ExtResource("1_hywoe")
+presets = PackedColorArray(0.298039, 0.298039, 0.298039, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0.207843, 0.32549, 0.65098, 1, 0.682353, 0.533333, 0.890196, 1, 0.627451, 0.921569, 0.658824, 1, 1, 0.72549, 0.219608, 1, 0, 0, 0, 1)
+metadata/_custom_type_script = "uid://byib4gjsgbvli"

@@ -1,9 +1,26 @@
-[gd_scene load_steps=15 format=3 uid="uid://dw446kblm4gtv"]
+[gd_scene load_steps=20 format=3 uid="uid://dw446kblm4gtv"]
 
 [ext_resource type="Script" uid="uid://cygtudt1tch7r" path="res://scenes/render.gd" id="1_pqwm0"]
 [ext_resource type="Script" uid="uid://dwgd7fhc366sl" path="res://sprite_stack.gd" id="2_qul4c"]
 [ext_resource type="Texture2D" uid="uid://d00v4kgcjdec7" path="res://assets/sprite_stack_test.png" id="3_1w2bp"]
 [ext_resource type="Texture2D" uid="uid://djnyuytwm35ef" path="res://assets/icons/sprite_stack_icons.png" id="4_1w2bp"]
+[ext_resource type="Theme" uid="uid://dixiwgd04ni83" path="res://resources/base_theme.tres" id="5_a8613"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a4580"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(320, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ssogu"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7n5nb"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(544, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vc1to"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(224, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_a8613"]
 atlas = ExtResource("4_1w2bp")
@@ -48,13 +65,9 @@ region = Rect2(160, 288, 32, 32)
 [node name="Render" type="Node"]
 script = ExtResource("1_pqwm0")
 rotation_speed = 15.0
-sprite_stack_rotation = 15.0
 save_incremental = true
 clear_output = true
-save_path = "res://exports/"
-file_name = "test_export"
-sprite_sheet_save_path = "res://exports/packed/"
-sprite_sheet_file_name = "desk_15_degree"
+output_path = "res://exports/output/"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -69,13 +82,17 @@ grow_vertical = 2
 [node name="RenderingContainer" type="SubViewportContainer" parent="CanvasLayer/Control"]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
-stretch = true
-stretch_shrink = 4
 
 [node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/RenderingContainer"]
 unique_name_in_owner = true
@@ -83,7 +100,7 @@ transparent_bg = true
 handle_input_locally = false
 mesh_lod_threshold = 1024.0
 canvas_item_default_texture_filter = 0
-size = Vector2i(160, 160)
+size = Vector2i(64, 64)
 render_target_update_mode = 4
 
 [node name="SpriteStack" type="CanvasGroup" parent="CanvasLayer/Control/RenderingContainer/SubViewport"]
@@ -98,17 +115,135 @@ metadata/_custom_type_script = "uid://dwgd7fhc366sl"
 unique_name_in_owner = true
 position = Vector2(50, 50)
 
-[node name="VFlowContainer" type="VFlowContainer" parent="CanvasLayer/Control"]
+[node name="TopButtons" type="MarginContainer" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 74.0
+grow_horizontal = 2
+theme_override_constants/margin_top = 10
+
+[node name="LoadButtons" type="VFlowContainer" parent="CanvasLayer/Control/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="FileSelect" type="TextureButton" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_a4580")
+texture_pressed = SubResource("AtlasTexture_ssogu")
+stretch_mode = 4
+
+[node name="HframesText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=49c2f2]H frames[/color]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Hframes" type="LineEdit" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_a8613")
+text = "14"
+virtual_keyboard_type = 2
+
+[node name="SpacingText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=49c2f2]Spacing[/color]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Spacing" type="LineEdit" parent="CanvasLayer/Control/TopButtons/LoadButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_a8613")
+text = "1"
+virtual_keyboard_type = 2
+
+[node name="SaveButtons" type="VFlowContainer" parent="CanvasLayer/Control/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+layout_mode = 2
+size_flags_vertical = 0
+dragger_visibility = 2
+
+[node name="SaveIncremental" type="CheckButton" parent="CanvasLayer/Control/TopButtons/SaveButtons/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "save incremental"
+
+[node name="AsepritePath" type="LineEdit" parent="CanvasLayer/Control/TopButtons/SaveButtons/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "aseprite"
+placeholder_text = "Aseprite Path"
+
+[node name="SaveButton" type="TextureButton" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 8
+texture_normal = SubResource("AtlasTexture_7n5nb")
+texture_pressed = SubResource("AtlasTexture_vc1to")
+stretch_mode = 4
+
+[node name="HframesText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+layout_mode = 2
+tooltip_text = "How many degress bettwen each rotation "
+bbcode_enabled = true
+text = "[color=49c2f2]Increments[/color]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Increments" type="LineEdit" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_a8613")
+text = "15"
+virtual_keyboard_type = 2
+
+[node name="SpacingText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=49c2f2]Rotation[/color]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Rotation" type="LineEdit" parent="CanvasLayer/Control/TopButtons/SaveButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "when save incremental is off it will use this as custom rotation to save "
+theme = ExtResource("5_a8613")
+text = "0"
+virtual_keyboard_type = 2
+
+[node name="BottomButtons" type="MarginContainer" parent="CanvasLayer/Control"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -32.0
+offset_top = -64.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
-[node name="ZoomInButton" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+[node name="NavigationButtons" type="VFlowContainer" parent="CanvasLayer/Control/BottomButtons"]
+layout_mode = 2
+
+[node name="ZoomInButton" type="TextureButton" parent="CanvasLayer/Control/BottomButtons/NavigationButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -117,7 +252,7 @@ texture_normal = SubResource("AtlasTexture_a8613")
 texture_pressed = SubResource("AtlasTexture_jnmdv")
 stretch_mode = 4
 
-[node name="ZoomOutButton" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+[node name="ZoomOutButton" type="TextureButton" parent="CanvasLayer/Control/BottomButtons/NavigationButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -126,7 +261,7 @@ texture_normal = SubResource("AtlasTexture_1w2bp")
 texture_pressed = SubResource("AtlasTexture_exhxs")
 stretch_mode = 4
 
-[node name="Left" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+[node name="Left" type="TextureButton" parent="CanvasLayer/Control/BottomButtons/NavigationButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -135,7 +270,7 @@ texture_normal = SubResource("AtlasTexture_g7xpd")
 texture_pressed = SubResource("AtlasTexture_e8y83")
 stretch_mode = 4
 
-[node name="Pause" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+[node name="Pause" type="TextureButton" parent="CanvasLayer/Control/BottomButtons/NavigationButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -145,7 +280,7 @@ texture_normal = SubResource("AtlasTexture_xkgr7")
 texture_pressed = SubResource("AtlasTexture_fsl7o")
 stretch_mode = 4
 
-[node name="Right" type="TextureButton" parent="CanvasLayer/Control/VFlowContainer"]
+[node name="Right" type="TextureButton" parent="CanvasLayer/Control/BottomButtons/NavigationButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -153,3 +288,32 @@ tooltip_text = "Zoom In"
 texture_normal = SubResource("AtlasTexture_5bj3c")
 texture_pressed = SubResource("AtlasTexture_8aobt")
 stretch_mode = 4
+
+[node name="Apprance" type="VFlowContainer" parent="CanvasLayer/Control/BottomButtons"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="HframesText" type="RichTextLabel" parent="CanvasLayer/Control/BottomButtons/Apprance"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=49c2f2]Background[/color]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="BackgroundColorButton" type="ColorPickerButton" parent="CanvasLayer/Control/BottomButtons/Apprance"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Background"
+color = Color(0.298039, 0.298039, 0.298039, 1)
+
+[node name="FileDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "Open a File"
+initial_position = 1
+size = Vector2i(530, 360)
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+dialog_close_on_escape = false
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.png")

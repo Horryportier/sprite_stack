@@ -1,10 +1,17 @@
-[gd_scene load_steps=20 format=3 uid="uid://dw446kblm4gtv"]
+[gd_scene load_steps=24 format=3 uid="uid://dw446kblm4gtv"]
 
 [ext_resource type="Script" uid="uid://cygtudt1tch7r" path="res://scenes/render.gd" id="1_pqwm0"]
+[ext_resource type="Shader" uid="uid://cq2fje8juolwx" path="res://resources/zoom.gdshader" id="2_jnmdv"]
 [ext_resource type="Script" uid="uid://dwgd7fhc366sl" path="res://sprite_stack.gd" id="2_qul4c"]
 [ext_resource type="Texture2D" uid="uid://d00v4kgcjdec7" path="res://assets/sprite_stack_test.png" id="3_1w2bp"]
 [ext_resource type="Texture2D" uid="uid://djnyuytwm35ef" path="res://assets/icons/sprite_stack_icons.png" id="4_1w2bp"]
 [ext_resource type="Theme" uid="uid://dixiwgd04ni83" path="res://resources/base_theme.tres" id="5_a8613"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_exhxs"]
+shader = ExtResource("2_jnmdv")
+shader_parameter/zoom_center = Vector2(0.5, 0.5)
+shader_parameter/zoom_amount = -0.05
+shader_parameter/keep_within_bounds = false
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_a4580"]
 atlas = ExtResource("4_1w2bp")
@@ -21,6 +28,14 @@ region = Rect2(544, 0, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_vc1to"]
 atlas = ExtResource("4_1w2bp")
 region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o5l6p"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(320, 288, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_miefp"]
+atlas = ExtResource("4_1w2bp")
+region = Rect2(0, 288, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_a8613"]
 atlas = ExtResource("4_1w2bp")
@@ -79,22 +94,30 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="RenderingContainer" type="SubViewportContainer" parent="CanvasLayer/Control"]
-unique_name_in_owner = true
+[node name="Control" type="Control" parent="CanvasLayer/Control"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = -32.0
-offset_right = 32.0
-offset_bottom = 32.0
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/RenderingContainer"]
+[node name="RenderingContainer" type="SubViewportContainer" parent="CanvasLayer/Control/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/Control/RenderingContainer"]
 unique_name_in_owner = true
 transparent_bg = true
 handle_input_locally = false
@@ -103,7 +126,7 @@ canvas_item_default_texture_filter = 0
 size = Vector2i(64, 64)
 render_target_update_mode = 4
 
-[node name="SpriteStack" type="CanvasGroup" parent="CanvasLayer/Control/RenderingContainer/SubViewport"]
+[node name="SpriteStack" type="CanvasGroup" parent="CanvasLayer/Control/Control/RenderingContainer/SubViewport"]
 unique_name_in_owner = true
 script = ExtResource("2_qul4c")
 texture = ExtResource("3_1w2bp")
@@ -111,9 +134,21 @@ hframes = 14
 spacting = 1.0
 metadata/_custom_type_script = "uid://dwgd7fhc366sl"
 
-[node name="MainCamera" type="Camera2D" parent="CanvasLayer/Control/RenderingContainer/SubViewport"]
+[node name="MainCamera" type="Camera2D" parent="CanvasLayer/Control/Control/RenderingContainer/SubViewport"]
 unique_name_in_owner = true
 position = Vector2(50, 50)
+
+[node name="ZoomRect" type="ColorRect" parent="CanvasLayer/Control"]
+unique_name_in_owner = true
+texture_filter = 1
+texture_repeat = 2
+material = SubResource("ShaderMaterial_exhxs")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="TopButtons" type="MarginContainer" parent="CanvasLayer/Control"]
 layout_mode = 1
@@ -242,6 +277,15 @@ theme_override_constants/margin_right = 10
 
 [node name="NavigationButtons" type="VFlowContainer" parent="CanvasLayer/Control/BottomButtons"]
 layout_mode = 2
+
+[node name="ResetTransform" type="TextureButton" parent="CanvasLayer/Control/BottomButtons/NavigationButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+tooltip_text = "Zoom In"
+texture_normal = SubResource("AtlasTexture_o5l6p")
+texture_pressed = SubResource("AtlasTexture_miefp")
+stretch_mode = 4
 
 [node name="ZoomInButton" type="TextureButton" parent="CanvasLayer/Control/BottomButtons/NavigationButtons"]
 unique_name_in_owner = true

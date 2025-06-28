@@ -9,22 +9,29 @@ extends Node
 # ui nodes
 @onready var zoom_in_button: TextureButton = %ZoomInButton
 @onready var zoom_out_button: TextureButton = %ZoomOutButton
+@onready var zoom_rect: ColorRect = %ZoomRect
+
+@onready var reset_transform_button: TextureButton = %ResetTransform
 @onready var left: TextureButton = %Left
 @onready var pause: TextureButton = %Pause
 @onready var right: TextureButton = %Right
+
 @onready var file_select: TextureButton = %FileSelect
 @onready var file_dialog: FileDialog = %FileDialog
+
 @onready var h_frames: LineEdit = %Hframes
 @onready var spacing: LineEdit = %Spacing
+
 @onready var save_button: TextureButton = %SaveButton
 @onready var save_incremental_button: CheckButton = %SaveIncremental
 @onready var custom_rotation: LineEdit = %Rotation
 @onready var increments: LineEdit = %Increments
+
 @onready var asepriet_path_line_edit: LineEdit = %AsepritePath
 @onready var background_color_button: ColorPickerButton = %BackgroundColorButton
 
 @export_group("ui")
-@export var zoom_speed: int = 1
+@export var zoom_speed: float = 0.001 
 @export var rotation_speed: float = 1
 @export_group("setup")
 @export var sprite_stack_rotation: float = 0 
@@ -37,6 +44,9 @@ const DEFAULT_ASEPRITE_PATH: String = "aseprite"
 
 @export var aseprite_path: String = DEFAULT_ASEPRITE_PATH
 
+
+const CENTER_POSITION: Vector2 = Vector2(0.5, 0.5)
+const DEFAULT_ZOOM: float  = -0.145
 
 @export_group("export")
 @export var output_path: String
@@ -51,8 +61,6 @@ func _ready() -> void:
 	align()
 	asepriet_path_line_edit.text = DEFAULT_ASEPRITE_PATH
 	asepriet_path_line_edit.text_changed.connect(_on_custom_aseprite_text_chnaged)
-	zoom_in_button.pressed.connect(_on_zoom_in_pressed)
-	zoom_out_button.pressed.connect(_on_zoom_out_pressed)
 	pause.toggled.connect(func (toggled: bool) -> void: is_spining_on = toggled)
 	left.pressed.connect(func () -> void: sprite_stack.stack_rotation += rotation_speed)
 	right.pressed.connect(func () -> void: sprite_stack.stack_rotation -= rotation_speed)
@@ -66,6 +74,7 @@ func _ready() -> void:
 	custom_rotation.text_changed.connect(_on_custom_rotation_text_changed)
 	increments.text_changed.connect(_on_increments_text_changed)
 	background_color_button.color_changed.connect(_on_background_color_changed)
+	reset_transform_button.pressed.connect(_on_reset_transform_pressed)
 
 func save_by_angle(path: String) -> void:
 	align()
@@ -93,6 +102,11 @@ func save_by_angle(path: String) -> void:
 func _physics_process(delta: float) -> void:
 	if is_spining_on:
 		sprite_stack.stack_rotation += rotation_speed * delta
+
+	if zoom_in_button.button_pressed:
+		zoom_rect.material.set("shader_parameter/zoom_amount", clamp(zoom_rect.material.get("shader_parameter/zoom_amount") + zoom_speed, -1, -0.05))
+	if zoom_out_button.button_pressed:
+		zoom_rect.material.set("shader_parameter/zoom_amount", clamp(zoom_rect.material.get("shader_parameter/zoom_amount")- zoom_speed, -1, -0.05))
 	
 func align() -> void:
 	@warning_ignore("integer_division")
@@ -132,11 +146,6 @@ func sprite_sheet(sprite_sheet_save_path: String) -> void:
 	if dir.has("pid"):
 		OS.kill(dir["pid"])
 	
-func _on_zoom_in_pressed() -> void:
-	subviewport_container.stretch_shrink =  clamp(subviewport_container.stretch_shrink + zoom_speed, 1, 8)
-
-func _on_zoom_out_pressed() -> void:
-	subviewport_container.stretch_shrink =  clamp(subviewport_container.stretch_shrink - zoom_speed, 1, 8)
 
 func _on_file_selected(path: String) -> void:
 	match file_dialog.file_mode:
@@ -208,3 +217,7 @@ func _on_increments_text_changed(new_text: String) -> void:
 
 func _on_background_color_changed(color: Color) -> void:
 	RenderingServer.set_default_clear_color(color)
+
+func _on_reset_transform_pressed() -> void:
+	zoom_rect.material.set("shader_parameter/zoom_amount", DEFAULT_ZOOM)
+	zoom_rect.material.set("shader_parameter/zoom_center", CENTER_POSITION)

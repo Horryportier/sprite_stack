@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=3 uid="uid://i7e5pw66p0me"]
+
+[ext_resource type="Texture2D" uid="uid://djnyuytwm35ef" path="res://assets/icons/sprite_stack_icons.png" id="1_bwjr7"]
+[ext_resource type="Script" uid="uid://bum8jr3mpgqhu" path="res://scenes/ui/vector_edit_field.gd" id="1_v06tc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v06tc"]
+atlas = ExtResource("1_bwjr7")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_agant"]
+atlas = ExtResource("1_bwjr7")
+region = Rect2(368, 0, 16, 16)
+
+[node name="VectorEditField" type="MarginContainer"]
+offset_right = 83.0
+offset_bottom = 64.0
+script = ExtResource("1_v06tc")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "X"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Y"
+
+[node name="EditFields" type="VSplitContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+dragger_visibility = 2
+
+[node name="X" type="LineEdit" parent="MarginContainer/HBoxContainer/EditFields"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "0"
+
+[node name="Y" type="LineEdit" parent="MarginContainer/HBoxContainer/EditFields"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+placeholder_text = "0"
+
+[node name="SyncCheack" type="CheckBox" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_icons/checked = SubResource("AtlasTexture_v06tc")
+theme_override_icons/unchecked = SubResource("AtlasTexture_agant")
+button_pressed = true

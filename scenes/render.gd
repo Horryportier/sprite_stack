@@ -19,7 +19,7 @@ extends Node
 @onready var file_select: TextureButton = %FileSelect
 @onready var file_dialog: FileDialog = %FileDialog
 
-@onready var h_frames: LineEdit = %Hframes
+@onready var sprite_size: VectorEditField = %SpriteSize
 @onready var spacing: LineEdit = %Spacing
 
 @onready var save_button: TextureButton = %SaveButton
@@ -60,7 +60,7 @@ func _ready() -> void:
 	right.pressed.connect(func () -> void: sprite_stack.stack_rotation -= rotation_speed)
 	file_select.pressed.connect(func () -> void: file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE; file_dialog.show())
 	file_dialog.file_selected.connect(_on_file_selected)
-	h_frames.text_changed.connect(_on_h_frames_text_changed)
+	sprite_size.vector_changed.connect(_on_sprite_size_changed)
 	spacing.text_changed.connect(_on_spacing_text_changed)
 	save_incremental_button.toggled.connect(func (toggled: bool) -> void: save_incremental = toggled)
 	save_incremental = save_incremental_button.toggle_mode
@@ -77,8 +77,7 @@ func save_by_angle(path: String) -> void:
 	var frames: Array[Image]
 	if save_incremental:
 		for i: int in 360 / sprite_stack_rotation_increments:
-			var frame_path = "%sframe_%s.png" % [output_path, i]
-			frames.append(await save(frame_path))
+			frames.append(await get_image())
 			current_angle += sprite_stack_rotation_increments
 			sprite_stack.stack_rotation = current_angle
 			await get_tree().create_timer(0.2).timeout
@@ -89,7 +88,8 @@ func save_by_angle(path: String) -> void:
 		await get_tree().create_timer(2).timeout
 	else:
 		sprite_stack.stack_rotation = sprite_stack_rotation
-		save(path)
+		var image = await get_image()
+		image.save_png(path)
 	save_path_indicator.text = "Saved"
 	get_tree().create_timer(3).timeout.connect(func () -> void: save_path_indicator.text = "")
 	
@@ -112,12 +112,11 @@ func align() -> void:
 	sprite_stack.global_position = subviewport.size * 0.5 + Vector2(0, sprite_stack.hframes / 2)
 	camera.global_position = subviewport.size * 0.5
 
-func save(path: String) -> Image:
+func get_image() -> Image:
 	await  RenderingServer.frame_post_draw
 	var texture: = subviewport.get_texture()
 	var image: = texture.get_image()
 	image.convert(Image.FORMAT_RGBA8)
-	image.save_png(path)
 	return image
 
 func sprite_sheet(frames: Array[Image]) -> Image:
@@ -171,13 +170,9 @@ func _save_file(path: String) -> void:
 	save_path_indicator.text = SAFE_PATH_INDICAITOR_FORMAT % [path]
 	save_by_angle(path)
 
-func _on_h_frames_text_changed(new_text: String) -> void:
-	if new_text == "":
-		return
-	if !new_text.is_valid_int():
-		h_frames.text = str(sprite_stack.hframes)
-		return
-	sprite_stack.hframes = int(new_text)
+func _on_sprite_size_changed(new_vector: Vector2) -> void:
+	@warning_ignore("narrowing_conversion")
+	sprite_stack.hframes = sprite_stack.texture.get_width() / new_vector.x
 	sprite_stack._update_sprite_stack()
 	align()
 	
@@ -197,6 +192,7 @@ func _on_custom_rotation_text_changed(new_text: String) -> void:
 		custom_rotation.text = str(sprite_stack_rotation)
 		return
 	sprite_stack_rotation = float(new_text)
+	sprite_stack.stack_rotation = sprite_stack_rotation
 
 func _on_increments_text_changed(new_text: String) -> void:
 	if new_text == "":

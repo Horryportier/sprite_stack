@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dw446kblm4gtv"]
+[gd_scene load_steps=26 format=3 uid="uid://dw446kblm4gtv"]
 
 [ext_resource type="Script" uid="uid://cygtudt1tch7r" path="res://scenes/render.gd" id="1_pqwm0"]
 [ext_resource type="Shader" uid="uid://cq2fje8juolwx" path="res://resources/zoom.gdshader" id="2_jnmdv"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://d00v4kgcjdec7" path="res://assets/sprite_stack_test.png" id="3_1w2bp"]
 [ext_resource type="Texture2D" uid="uid://djnyuytwm35ef" path="res://assets/icons/sprite_stack_icons.png" id="4_1w2bp"]
 [ext_resource type="Theme" uid="uid://dixiwgd04ni83" path="res://resources/base_theme.tres" id="5_a8613"]
+[ext_resource type="PackedScene" uid="uid://i7e5pw66p0me" path="res://scenes/ui/vector_edit_field.tscn" id="6_exhxs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_exhxs"]
 shader = ExtResource("2_jnmdv")
@@ -167,34 +168,38 @@ dragger_visibility = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/TopButtons/VSplitContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 6
 
 [node name="LoadButtons" type="VFlowContainer" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
+size_flags_vertical = 4
 
 [node name="FileSelect" type="TextureButton" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+size_flags_vertical = 2
 texture_normal = SubResource("AtlasTexture_a4580")
 texture_pressed = SubResource("AtlasTexture_ssogu")
 stretch_mode = 4
 
-[node name="HframesText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
+[node name="VSplitContainer" type="VSplitContainer" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
+layout_mode = 2
+dragger_visibility = 2
+
+[node name="SpriteSizeText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons/VSplitContainer"]
 layout_mode = 2
 bbcode_enabled = true
-text = "[color=49c2f2]H frames[/color]"
+text = "[color=49c2f2]Frame Size[/color]"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Hframes" type="LineEdit" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
+[node name="SpriteSize" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons/VSplitContainer" instance=ExtResource("6_exhxs")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 4
-theme = ExtResource("5_a8613")
-text = "14"
-virtual_keyboard_type = 2
+size_flags_vertical = 0
+vector = Vector2(32, 32)
 
 [node name="SpacingText" type="RichTextLabel" parent="CanvasLayer/Control/TopButtons/VSplitContainer/MarginContainer/LoadButtons"]
 layout_mode = 2
@@ -361,7 +366,7 @@ autowrap_mode = 0
 unique_name_in_owner = true
 layout_mode = 2
 text = "Background"
-color = Color(0.286275, 0.760784, 0.94902, 1)
+color = Color(0.298039, 0.298039, 0.298039, 1)
 
 [node name="FileDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true
